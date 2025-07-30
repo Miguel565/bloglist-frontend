@@ -1,12 +1,18 @@
-const Notification = ({ notification }) => {
-	const { message, type } = notification
+const Notification = ({ message }) => {
+	const textStyle = {
+        color: 'green',
+        background: 'lightgrey'
+    }
 
 	if(!message) {
 		return null
+	} else if (message.type === 'error') {
+		textStyle.color = 'red';
+        textStyle.background = 'lightpink';
 	}
 	return (
-		<div className={type}>
-			{message}
+		<div className="alert" style={textStyle} >
+			{message.text}
 		</div>
 	)
 }

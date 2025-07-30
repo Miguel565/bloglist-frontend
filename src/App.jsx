@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import './App.css'
-import Blog from './components/Blog'
-import Login from './components/Login'
+import Blogs from './components/Blog'
+import LoginForm from './components/Login'
 import Notification from './components/Notification'
 import blogServices from './services/blogs'
 import loginServices from './services/login'
@@ -14,43 +14,82 @@ const App = () => {
   const [user, setUser] = useState(null)
 
   useEffect(() => {
-    blogServices.getAll().then(blogs => setBlogs(blogs))
+    const loggedUserJSON = window.localStorage.getItem('loggedBlogUser')
+    if (loggedUserJSON) {
+      const user = JSON.parse(loggedUserJSON)
+      setUser(user)
+      blogServices.setToken(user.token)
+    }
   }, [])
 
-  const onLogin = async (username, passwordd) => {
-    event.preventDefault()
-    try{
+  useEffect(() => {
+    blogServices.getAll()
+      .then(blogs => setBlogs(blogs))
+      .catch(error => {
+        setNotification({
+          type: 'error',
+          text: 'Error fetching blogs. Please try again later.',
+          timeout: setTimeout(() => {
+            setNotification(null);
+          }, 5000)
+        })
+        console.error('Error fetching blogs: ', error)
+      })
+  }, [])
+
+  const onLogin = async (username, password) => {
+    try {
       const user = await loginServices.getAll(username, password)
       setUser(user)
+      window.localStorage.setItem('loggedBlogUser', JSON.stringify(user))
       blogServices.setToken(user.token)
       setUsername('')
       setPassword('')
     } catch (error) {
       setNotification({
-        message: `${error}`,
         type: 'error',
-        setTimeout(() => {
+        text: 'Wrong user or password',
+        timeout: setTimeout(() => {
           setNotification([])
         }, 5000)
       })
+      console.error('Login error: ', error)
     }
-    if (user === null){
-      return (
-        <div>
-          <Notification notification={notification} />
-          <Login handleLogin={onLogin} />
-        </div>
-      )
-    }
+  }
+
+  const handleForm = () => (
+    <div>
+      <LoginForm
+        username={username}
+        setUsername={setUsername}
+        password={password}
+        setPassword={setPassword}
+        handleLogin={onLogin}
+      />
+    </div>
+  )
+
+  const logOut = () => {
+    window.localStorage.removeItem('loggedBlogUser')
+    setUser(null)
   }
 
   return (
     <div className="App">
-      <h2>Blogs</h2>
-      <Notification notification={notification} />
-      {blogs.map(blog => 
-        <Blog key={blog.id} blog={blog} />
-      )}
+      <header className="App-header">
+        <h1>Blogs</h1>
+      </header>
+      <Notification message={notification} />
+      {
+        user === null ?
+        handleForm() :
+        <div>
+          <p>{user.username} logged in</p>
+          <button onClick={() => logOut()} >Logout</button>
+        </div>
+      }
+      <h2>Blogs list</h2>
+      <Blogs blogs={blogs} />
     </div>
   )
 }
