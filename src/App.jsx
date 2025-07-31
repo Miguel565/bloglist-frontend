@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import './App.css'
 import Blogs from './components/Blog'
+import BlogForm from './components/BlogForm'
 import LoginForm from './components/Login'
 import Notification from './components/Notification'
 import blogServices from './services/blogs'
@@ -8,8 +9,6 @@ import loginServices from './services/login'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
   const [notification, setNotification] = useState([])
   const [user, setUser] = useState(null)
 
@@ -37,9 +36,23 @@ const App = () => {
       })
   }, [])
 
+  const addBlog = async (title, author, url) => {
+    try{
+      const result = await blogServices.create({ title, author, url })
+      setBlogs(blogs.concat(result))
+      setNotification({
+        type: 'info',
+        text: `New blog ${title} by ${author} added`,
+        timeout: setTimeout(() => {
+          setNotification(null)
+        }, 3000);
+      })
+    }
+  }
+
   const onLogin = async (username, password) => {
     try {
-      const user = await loginServices.getAll(username, password)
+      const user = await loginServices.login({ username, password })
       setUser(user)
       window.localStorage.setItem('loggedBlogUser', JSON.stringify(user))
       blogServices.setToken(user.token)
@@ -59,13 +72,13 @@ const App = () => {
 
   const handleForm = () => (
     <div>
-      <LoginForm
-        username={username}
-        setUsername={setUsername}
-        password={password}
-        setPassword={setPassword}
-        handleLogin={onLogin}
-      />
+      <LoginForm handleLogin={onLogin} />
+    </div>
+  )
+
+  const blogForm = () => (
+    <div>
+      <BlogForm createBlog={addBlog} />
     </div>
   )
 
@@ -86,7 +99,9 @@ const App = () => {
         <div>
           <p>{user.username} logged in</p>
           <button onClick={() => logOut()} >Logout</button>
+          <br />
         </div>
+        blogForm()
       }
       <h2>Blogs list</h2>
       <Blogs blogs={blogs} />
