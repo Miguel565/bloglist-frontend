@@ -3,13 +3,13 @@ import './App.css'
 import Blogs from './components/Blog'
 import BlogForm from './components/BlogForm'
 import LoginForm from './components/Login'
-import Notification from './components/Notification'
+import Notification from './components/Notification'  // Step 4
 import blogServices from './services/blogs'
 import loginServices from './services/login'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
-  const [notification, setNotification] = useState([])
+  const [notification, setNotification] = useState([])  // Step 4
   const [user, setUser] = useState(null)
 
   useEffect(() => {
@@ -99,7 +99,7 @@ const App = () => {
       <header className="App-header">
         <h1>Blogs</h1>
       </header>
-      <Notification message={notification} />
+      <Notification message={notification} />  // Step 4
       {
         user === null ?
           handleForm() :
