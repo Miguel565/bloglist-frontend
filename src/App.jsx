@@ -45,8 +45,17 @@ const App = () => {
         text: `New blog ${title} by ${author} added`,
         timeout: setTimeout(() => {
           setNotification(null)
-        }, 3000);
+        }, 3000)
       })
+    } catch (error) {
+      setNotification({
+        type: 'error',
+        text: 'Add new blog fails',
+        timeout: setTimeout(() => {
+          setNotification(null)
+        }, 3000)
+      })
+      console.error('Error adding blog: ', error)
     }
   }
 
@@ -56,8 +65,6 @@ const App = () => {
       setUser(user)
       window.localStorage.setItem('loggedBlogUser', JSON.stringify(user))
       blogServices.setToken(user.token)
-      setUsername('')
-      setPassword('')
     } catch (error) {
       setNotification({
         type: 'error',
@@ -95,13 +102,15 @@ const App = () => {
       <Notification message={notification} />
       {
         user === null ?
-        handleForm() :
-        <div>
-          <p>{user.username} logged in</p>
-          <button onClick={() => logOut()} >Logout</button>
-          <br />
-        </div>
-        blogForm()
+          handleForm() :
+          <>
+            <div>
+              <p>{user.username} logged in</p>
+              <button onClick={() => logOut()} >Logout</button>
+              <br />
+            </div>
+            {blogForm()}
+          </>
       }
       <h2>Blogs list</h2>
       <Blogs blogs={blogs} />
