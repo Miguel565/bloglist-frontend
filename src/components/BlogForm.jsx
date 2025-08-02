@@ -8,6 +8,9 @@ const BlogForm = ({ createBlog }) => {
 	const onSubmit = (event) => {
 		event.preventDefault()
 		createBlog(title, author, url)
+		setTitle('')
+		setAuthor('')
+		setUrl('')
 	}
 
 	return (
@@ -47,7 +50,7 @@ const BlogForm = ({ createBlog }) => {
 						/>
 					</label>
 				</div>
-				<button type="submit">Save</button>
+				<button type="submit">create</button>
 			</form>
 		</div>
 	)

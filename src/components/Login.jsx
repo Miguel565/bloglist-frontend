@@ -7,6 +7,8 @@ const LoginForm = ({ handleLogin }) => {
 	const onSubmit = (event) => {
 		event.preventDefault()
 		handleLogin(username, password)
+		setUsername('')
+		setPassword('')
 	}
 
 	return (

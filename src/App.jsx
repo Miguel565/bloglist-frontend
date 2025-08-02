@@ -1,8 +1,9 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import './App.css'
 import Blogs from './components/Blog'
 import BlogForm from './components/BlogForm'
 import LoginForm from './components/Login'
+import Togglable from './components/Togglable'
 import Notification from './components/Notification'  // Step 4
 import blogServices from './services/blogs'
 import loginServices from './services/login'
@@ -11,6 +12,8 @@ const App = () => {
   const [blogs, setBlogs] = useState([])
   const [notification, setNotification] = useState([])  // Step 4
   const [user, setUser] = useState(null)
+
+  const blogFomrRef = useRef()
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedBlogUser')
@@ -24,20 +27,11 @@ const App = () => {
   useEffect(() => {
     blogServices.getAll()
       .then(blogs => setBlogs(blogs))
-      .catch(error => {
-        setNotification({
-          type: 'error',
-          text: 'Error fetching blogs. Please try again later.',
-          timeout: setTimeout(() => {
-            setNotification(null);
-          }, 5000)
-        })
-        console.error('Error fetching blogs: ', error)
-      })
   }, [])
 
   const addBlog = async (title, author, url) => {
     try{
+      blogFomrRef.current.toggleVisibility()
       const result = await blogServices.create({ title, author, url })
       setBlogs(blogs.concat(result))
       setNotification({
@@ -77,13 +71,13 @@ const App = () => {
     }
   }
 
-  const handleForm = () => (
+  const loginForm = () => (
     <div>
       <LoginForm handleLogin={onLogin} />
     </div>
   )
 
-  const blogForm = () => (
+  {/*const blogForm = () => (
     <div>
       <BlogForm createBlog={addBlog} />
     </div>
@@ -92,7 +86,7 @@ const App = () => {
   const logOut = () => {
     window.localStorage.removeItem('loggedBlogUser')
     setUser(null)
-  }
+  }*/}
 
   return (
     <div className="App">
@@ -100,7 +94,16 @@ const App = () => {
         <h1>Blogs</h1>
       </header>
       <Notification message={notification} />  // Step 4
+      {!user && loginForm()}
       {
+        user && <div>
+          <p>{user.name} logged in</p>
+          <Togglable buttonLabel="new blog" ref={blogFomrRef}>
+            <BlogForm createBlog={addBlog} />
+          </Togglable>
+        </div>
+      }
+      {/*
         user === null ?
           handleForm() :
           <>
@@ -111,7 +114,7 @@ const App = () => {
             </div>
             {blogForm()}
           </>
-      }
+      */}
       <h2>Blogs list</h2>
       <Blogs blogs={blogs} />
     </div>
