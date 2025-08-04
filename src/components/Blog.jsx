@@ -1,7 +1,36 @@
+import { useState } from 'react'
+
 const Blog = ({ blog }) => {
-    <div>
-        {blog.title} {blog.author} {blog.url} {blog.user}
-    </div>
+    const [visible, setVisible] = useState(false)
+
+    const hide = visible ? 'none' : 'block'
+    const textLabel = visible ? 'hide' : 'view'
+
+    const blogStyle = {
+        paddingTop: 10,
+        paddingLeft: 2,
+        border: 'solid',
+        borderWidht: 1,
+        marginBottom: 5
+    }
+
+    const handleVisible = () => {
+        setVisible(!visible)
+    }
+
+    return (
+        <div style={blogStyle}>
+            <li className="blog">
+                <div>
+                    {blog.title} 
+                    <button onClick={() => handleVisible()} > { textLabel } </button>
+                </div>
+                <div style={hide} >
+                    {blog.author} {blog.url} {blog.likes}
+                </div>
+            </li>
+        </div>
+    )
 }
 
 const Blogs = ({ blogs }) => {

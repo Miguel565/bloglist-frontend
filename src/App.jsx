@@ -71,50 +71,35 @@ const App = () => {
     }
   }
 
-  const loginForm = () => (
-    <div>
-      <LoginForm handleLogin={onLogin} />
-    </div>
-  )
-
-  {/*const blogForm = () => (
-    <div>
-      <BlogForm createBlog={addBlog} />
-    </div>
-  )
-
   const logOut = () => {
     window.localStorage.removeItem('loggedBlogUser')
     setUser(null)
-  }*/}
+  }
 
   return (
     <div className="App">
       <header className="App-header">
         <h1>Blogs</h1>
       </header>
-      <Notification message={notification} />  // Step 4
-      {!user && loginForm()}
+      <Notification message={notification} />
+      {
+        !user && <div>
+          <Togglable buttonLabel="login">
+            <LoginForm handleLogin={onLogin} />
+          </Togglable>
+        </div>
+      }
       {
         user && <div>
-          <p>{user.name} logged in</p>
+          <p>
+            {user.name} logged in
+            <button onClick={() => logOut()}>Logout</button>
+          </p>
           <Togglable buttonLabel="new blog" ref={blogFomrRef}>
             <BlogForm createBlog={addBlog} />
           </Togglable>
         </div>
       }
-      {/*
-        user === null ?
-          handleForm() :
-          <>
-            <div>
-              <p>{user.username} logged in</p>
-              <button onClick={() => logOut()} >Logout</button>
-              <br />
-            </div>
-            {blogForm()}
-          </>
-      */}
       <h2>Blogs list</h2>
       <Blogs blogs={blogs} />
     </div>
