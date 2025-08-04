@@ -44,12 +44,28 @@ const App = () => {
     } catch (error) {
       setNotification({
         type: 'error',
-        text: 'Add new blog fails',
+        text: 'FAilure to add new blog',
         timeout: setTimeout(() => {
           setNotification(null)
         }, 3000)
       })
       console.error('Error adding blog: ', error)
+    }
+  }
+
+  const updateBlogLikes = async (blog) => {
+    try {
+      const result = await blogServices.update(blog.id, { ...blog, likes: blog.likes + 1 })
+      setBlogs(blogs.map(b => b.id === blog.id ? result : b))
+    } catch (error) {
+      setNotification({
+        type: 'error',
+        text: 'Failure to do like, try again',
+        timeout: setTimeout(() => {
+          setNotification(null)
+        }, 3000)
+      })
+      console.error('Error updating blog likes: ', error)
     }
   }
 
@@ -101,7 +117,7 @@ const App = () => {
         </div>
       }
       <h2>Blogs list</h2>
-      <Blogs blogs={blogs} />
+      <Blogs blogs={blogs} handleLikes={updateBlogLikes} />
     </div>
   )
 }

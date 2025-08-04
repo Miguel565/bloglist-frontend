@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-const Blog = ({ blog }) => {
+const Blog = ({ blog, handleLikes }) => {
     const [visible, setVisible] = useState(false)
 
     const hide = visible ? 'none' : 'block'
@@ -20,20 +20,23 @@ const Blog = ({ blog }) => {
 
     return (
         <div style={blogStyle}>
-            <li className="blog">
+            <li>
                 <div>
                     {blog.title} 
                     <button onClick={() => handleVisible()} > { textLabel } </button>
                 </div>
                 <div style={hide} >
-                    {blog.author} {blog.url} {blog.likes}
+                    Author: {blog.author}
+                    Url: {blog.url}
+                    Likes: {blog.likes}
+                    <button onClick={() => handleLikes(blog)} >like</button>
                 </div>
             </li>
         </div>
     )
 }
 
-const Blogs = ({ blogs }) => {
+const Blogs = ({ blogs, handleLikes }) => {
     if (!blogs || blogs.length === 0) {
         return (
             <div>
@@ -44,7 +47,7 @@ const Blogs = ({ blogs }) => {
     return (
         <div>
             <ul>
-                {blogs.map(blog => <Blog key={blog.id} blog={blog} />)}
+                {blogs.map(blog => <Blog key={blog.id} blog={blog} handleLikes={handleLikes} />)}
             </ul>
         </div>
     )
