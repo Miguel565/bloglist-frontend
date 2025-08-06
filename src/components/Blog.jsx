@@ -3,9 +3,6 @@ import { useState } from 'react'
 const Blog = ({ blog, handleLikes }) => {
     const [visible, setVisible] = useState(false)
 
-    const hide = visible ? 'none' : 'block'
-    const textLabel = visible ? 'hide' : 'view'
-
     const blogStyle = {
         paddingTop: 10,
         paddingLeft: 2,
@@ -19,25 +16,22 @@ const Blog = ({ blog, handleLikes }) => {
     }
 
     return (
-        <div style={blogStyle}>
-            <li>
-                <div>
-                    {blog.title} 
-                    <button onClick={() => handleVisible()} > { textLabel } </button>
+        <li style={blogStyle} className='blog'>
+            {blog.title} <button onClick={handleVisible}>{visible ? 'hide' : 'view'}</button>
+            {visible &&
+                <div className='togglableContent'>
+                    <p> {blog.author} </p>
+                    <p>{blog.url}</p>
+                    <p>likes {blog.likes} <button onClick={() => handleLikes(blog)}>like</button></p>
+                    <p>{blog.user.name}</p>
                 </div>
-                <div style={hide} >
-                    Author: {blog.author}
-                    Url: {blog.url}
-                    Likes: {blog.likes}
-                    <button onClick={() => handleLikes(blog)} >like</button>
-                </div>
-            </li>
-        </div>
+            }
+        </li>
     )
 }
 
 const Blogs = ({ blogs, handleLikes }) => {
-    if (!blogs || blogs.length === 0) {
+    if (!blogs || blogs === undefined || blogs.length === 0) {
         return (
             <div>
                 <p>No blogs yet</p>
@@ -47,7 +41,15 @@ const Blogs = ({ blogs, handleLikes }) => {
     return (
         <div>
             <ul>
-                {blogs.map(blog => <Blog key={blog.id} blog={blog} handleLikes={handleLikes} />)}
+                {
+                    blogs.map(blog =>
+                        <Blog
+                            key={blog.id}
+                            blog={blog}
+                            handleLikes={handleLikes}
+                        />
+                    )
+                }
             </ul>
         </div>
     )
