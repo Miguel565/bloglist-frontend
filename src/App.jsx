@@ -25,15 +25,17 @@ const App = () => {
   }, [])
 
   useEffect(() => {
-    blogServices.getAll()
-      .then(blogs => setBlogs(blogs))
+    blogServices.getAll().then(blogs => {
+      const sorted = [...blogs].sort((a, b) => b.likes - a.likes)
+      setBlogs(sorted)
+    })
   }, [])
 
   const addBlog = async (title, author, url) => {
     try{
       blogFomrRef.current.toggleVisibility()
       const result = await blogServices.create({ title, author, url })
-      setBlogs(blogs.concat(result))
+      setBlogs(prevBlogs => [...prevBlogs, result].sort((a, b) => b.likes - a.likes))
       setNotification({
         type: 'info',
         text: `New blog ${title} by ${author} added`,
@@ -56,7 +58,7 @@ const App = () => {
   const updateBlogLikes = async (blog) => {
     try {
       const result = await blogServices.update(blog.id, { ...blog, likes: blog.likes + 1 })
-      setBlogs(blogs.map(b => b.id === blog.id ? result : b))
+      setBlogs(prevBlogs => prevBlogs.map(b => b.id === blog.id ? result : b).sort((a, b) => b.likes - a.likes))
     } catch (error) {
       setNotification({
         type: 'error',
