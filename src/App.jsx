@@ -4,13 +4,13 @@ import Blogs from './components/Blog'
 import BlogForm from './components/BlogForm'
 import LoginForm from './components/Login'
 import Togglable from './components/Togglable'
-import Notification from './components/Notification'  // Step 4
+import Notification from './components/Notification'
 import blogServices from './services/blogs'
 import loginServices from './services/login'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
-  const [notification, setNotification] = useState([])  // Step 4
+  const [notification, setNotification] = useState([])
   const [user, setUser] = useState(null)
 
   const blogFomrRef = useRef()
@@ -32,25 +32,25 @@ const App = () => {
   }, [])
 
   const addBlog = async (title, author, url) => {
-    try{
+    try {
       blogFomrRef.current.toggleVisibility()
       const result = await blogServices.create({ title, author, url })
       setBlogs(prevBlogs => [...prevBlogs, result].sort((a, b) => b.likes - a.likes))
       setNotification({
         type: 'info',
-        text: `New blog ${title} by ${author} added`,
-        timeout: setTimeout(() => {
-          setNotification(null)
-        }, 3000)
+        text: `New blog ${title} by ${author} added`
       })
+      setTimeout(() => {
+        setNotification(null)
+      }, 3000)
     } catch (error) {
       setNotification({
         type: 'error',
-        text: 'FAilure to add new blog',
-        timeout: setTimeout(() => {
-          setNotification(null)
-        }, 3000)
+        text: 'FAilure to add new blog'
       })
+      setTimeout(() => {
+        setNotification(null)
+      }, 3000)
       console.error('Error adding blog: ', error)
     }
   }
@@ -62,11 +62,11 @@ const App = () => {
     } catch (error) {
       setNotification({
         type: 'error',
-        text: 'Failure to do like, try again',
-        timeout: setTimeout(() => {
-          setNotification(null)
-        }, 3000)
+        text: 'Failure to do like, try again'
       })
+      setTimeout(() => {
+        setNotification(null)
+      }, 3000)
       console.error('Error updating blog likes: ', error)
     }
   }
@@ -80,12 +80,37 @@ const App = () => {
     } catch (error) {
       setNotification({
         type: 'error',
-        text: 'Wrong user or password',
-        timeout: setTimeout(() => {
-          setNotification([])
-        }, 5000)
+        text: 'Wrong user or password'
       })
+      setTimeout(() => {
+        setNotification(null)
+      }, 3000)
       console.error('Login error: ', error)
+    }
+  }
+
+  const handleDelete = async (id) => {
+    if (window.confirm('Are you sure you want to delete this blog?')) {
+      try {
+        await blogServices.deleteBlog(id)
+        setBlogs(blogs => blogs.filter(blog => blog.id !== id))
+        setNotification({
+          type: 'info',
+          text: 'Blog deleted successfully'
+        })
+        setTimeout(() => {
+          setNotification(null)
+        }, 5000)
+      } catch (error) {
+        setNotification({
+          type: 'error',
+          text: 'Error deleting blog, try again'
+        })
+        setTimeout(() => {
+          setNotification(null)
+        }, 3000)
+        console.error('Delete error: ', error)
+      }
     }
   }
 
@@ -119,7 +144,7 @@ const App = () => {
         </div>
       }
       <h2>Blogs list</h2>
-      <Blogs blogs={blogs} handleLikes={updateBlogLikes} />
+      <Blogs blogs={blogs} handleLikes={updateBlogLikes} onDelete={handleDelete} />
     </div>
   )
 }

@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-const Blog = ({ blog, handleLikes }) => {
+const Blog = ({ blog, handleLikes, onDelete }) => {
     const [visible, setVisible] = useState(false)
 
     const blogStyle = {
@@ -24,13 +24,19 @@ const Blog = ({ blog, handleLikes }) => {
                     <p>{blog.url}</p>
                     <p>likes {blog.likes} <button onClick={() => handleLikes(blog)}>like</button></p>
                     <p>{blog.user.name}</p>
+                    {
+                        blog.user.username === window.localStorage.getItem('loggedBlogUser') &&
+                            <form onSubmit={() => onDelete(blog.id)}>
+                                <button type='submit'>remove</button>
+                            </form>
+                    }
                 </div>
             }
         </li>
     )
 }
 
-const Blogs = ({ blogs, handleLikes }) => {
+const Blogs = ({ blogs, handleLikes, onDelete }) => {
     if (!blogs || blogs === undefined || blogs.length === 0) {
         return (
             <div>
@@ -46,6 +52,7 @@ const Blogs = ({ blogs, handleLikes }) => {
                         <Blog
                             key={blog.id}
                             blog={blog}
+                            onDelete={onDelete}
                             handleLikes={handleLikes}
                         />
                     )
