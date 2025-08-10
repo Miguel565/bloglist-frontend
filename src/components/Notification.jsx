@@ -1,4 +1,4 @@
-const Notification = ({ message }) => {  // Step 4
+const Notification = ({ message }) => {
 	const textStyle = {
         color: 'green',
         background: 'lightgrey'
@@ -11,7 +11,7 @@ const Notification = ({ message }) => {  // Step 4
         textStyle.background = 'lightpink';
 	}
 	return (
-		<div className="alert" style={textStyle} >
+		<div className={message.type} >
 			{message.text}
 		</div>
 	)

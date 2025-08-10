@@ -31,7 +31,9 @@ body {
 }
 
 h1 {
-  font-size: 3.2em;
+  font-style: italic;
+  font-size: 4.5em;
+  color: green;
   line-height: 1.1;
 }
 
@@ -52,6 +54,32 @@ button:hover {
 button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
+}
+
+.info {
+  color: green;
+  background: lightgreen;
+  border-style: solid;
+  border-radius: 5px;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+
+.error {
+  color: red;
+  background: lightpink;
+  border-style: solid;
+  border-radius: 5px;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+
+.blog {
+  padding-top: 10px;
+  margin-bottom: 5px;
+  padding-left: 5px;
+  border: 1px solid;
+  color: gray;
 }
 
 @media (prefers-color-scheme: light) {
