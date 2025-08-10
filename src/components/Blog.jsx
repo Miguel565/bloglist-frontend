@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-const Blog = ({ blog, handleLikes, onDelete }) => {
+export const Blog = ({ blog, handleLikes, onDelete }) => {
     const [visible, setVisible] = useState(false)
 
     const handleVisible = () => {
