@@ -9,8 +9,8 @@ const Blog = ({ blog, handleLikes, onDelete }) => {
 
     return (
         <li className='blog'>
-            {blog.title} <button onClick={handleVisible}>{visible ? 'hide' : 'view'}</button>
-            {blog.author}
+            <p>{blog.title} <button onClick={handleVisible}>{visible ? 'hide' : 'view'}</button></p>
+            <p>{blog.author}</p>
             {visible &&
                 <div className='togglableContent'>
                     <p>{blog.url}</p>
