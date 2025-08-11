@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import './App.css'
-import Blogs from './components/Blog'
+import Blog from './components/Blog'
 import BlogForm from './components/BlogForm'
 import LoginForm from './components/Login'
 import Togglable from './components/Togglable'
@@ -144,7 +144,16 @@ const App = () => {
         </div>
       }
       <h2>Blogs list</h2>
-      <Blogs blogs={blogs} handleLikes={updateBlogLikes} onDelete={handleDelete} />
+      <ul>
+        {blogs?.map(blog =>
+          <Blog
+            key={blog.id}
+            blog={blog}
+            handleLikes={updateBlogLikes}
+            onDelete={handleDelete}
+          />
+        )}
+      </ul>
     </div>
   )
 }
