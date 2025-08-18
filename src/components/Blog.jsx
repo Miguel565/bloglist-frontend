@@ -14,7 +14,7 @@ const Blog = ({ blog, handleLikes, onDelete }) => {
             {visible &&
                 <div className='togglableContent'>
                     <p>{blog.url}</p>
-                    <p>likes {blog.likes} <button onClick={() => handleLikes(blog)}>like</button></p>
+                    <p data-testid="likes" >likes {blog.likes} <button data-testid="like-button" onClick={() => handleLikes(blog)}>like</button></p>
                     <p>{blog.user.name}</p>
                     {
                         blog.user.username === window.localStorage.getItem('loggedBlogUser') &&
