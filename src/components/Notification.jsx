@@ -1,18 +1,11 @@
-const Notification = ({ message }) => {
-	const textStyle = {
-        color: 'green',
-        background: 'lightgrey'
-    }
+import { useNotificationContext } from '../context/NotificationContext'
 
-	if(!message) {
-		return null
-	} else if (message.type === 'error') {
-		textStyle.color = 'red';
-        textStyle.background = 'lightpink';
-	}
+const Notification = () => {
+	const { notification } = useNotificationContext()
+	
 	return (
-		<div className={message.type} >
-			{message.text}
+		<div className={notification.type}>
+			{notification.message}
 		</div>
 	)
 }
