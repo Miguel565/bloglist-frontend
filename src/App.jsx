@@ -1,6 +1,6 @@
-import { useState, useEffect, useRef } from 'react'
-import './App.css'
-import Blog from './components/Blog'
+import { useState, useEffect } from 'react'
+//import './App.css'
+import BlogList from './components/BlogList'
 import BlogForm from './components/BlogForm'
 import LoginForm from './components/Login'
 import Togglable from './components/Togglable'
@@ -9,51 +9,16 @@ import blogServices from './services/blogs'
 import loginServices from './services/login'
 
 const App = () => {
-  const [blogs, setBlogs] = useState([])
-  const [notification, setNotification] = useState([])
   const [user, setUser] = useState(null)
-
-  const blogFomrRef = useRef()
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedBlogUser')
     if (loggedUserJSON) {
-      const user = JSON.parse(loggedUserJSON)
-      setUser(user)
+      const userJSON = JSON.parse(loggedUserJSON)
+      setUser(userJSON)
       blogServices.setToken(user.token)
     }
   }, [])
-
-  useEffect(() => {
-    blogServices.getAll().then(blogs => {
-      const sorted = [...blogs].sort((a, b) => b.likes - a.likes)
-      setBlogs(sorted)
-    })
-  }, [])
-
-  const addBlog = async (title, author, url) => {
-    try {
-      blogFomrRef.current.toggleVisibility()
-      const result = await blogServices.create({ title, author, url })
-      setBlogs(prevBlogs => [...prevBlogs, result].sort((a, b) => b.likes - a.likes))
-      setNotification({
-        type: 'info',
-        text: `New blog ${title} by ${author} added`
-      })
-      setTimeout(() => {
-        setNotification(null)
-      }, 3000)
-    } catch (error) {
-      setNotification({
-        type: 'error',
-        text: 'FAilure to add new blog'
-      })
-      setTimeout(() => {
-        setNotification(null)
-      }, 3000)
-      console.error('Error adding blog: ', error)
-    }
-  }
 
   const updateBlogLikes = async (blog) => {
     try {
@@ -124,7 +89,7 @@ const App = () => {
       <header className="App-header">
         <h1>Blogs</h1>
       </header>
-      <Notification message={notification} />
+      <Notification />
       {
         !user && <div>
           <Togglable buttonLabel="login">
@@ -139,21 +104,11 @@ const App = () => {
             <button onClick={() => logOut()}>Logout</button>
           </p>
           <Togglable buttonLabel="create new blog" ref={blogFomrRef}>
-            <BlogForm createBlog={addBlog} />
+            <BlogForm />
           </Togglable>
         </div>
       }
-      <h2>Blogs list</h2>
-      <ul>
-        {blogs?.map(blog =>
-          <Blog
-            key={blog.id}
-            blog={blog}
-            handleLikes={updateBlogLikes}
-            onDelete={handleDelete}
-          />
-        )}
-      </ul>
+      <BlogList />
     </div>
   )
 }

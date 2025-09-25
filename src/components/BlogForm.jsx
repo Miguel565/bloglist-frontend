@@ -1,61 +1,77 @@
-import { useState } from 'react'
+import { useRef } from 'react'
+import { useField } from '../hooks'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { create } from '../services/blogs'
+import { setNotification } from '../context/NotificationContext'
 
-const BlogForm = ({ createBlog }) => {
-	const [title, setTitle] = useState('')
-	const [author, setAuthor] = useState('')
-	const [url, setUrl] = useState('')
+const BlogForm = () => {
+	const queryClient = useQueryClient()
+	const blogFormRef = useRef()
 
-	const onSubmit = (event) => {
+	const { reset: resetTitle, ...title } = useField('text')
+	const { reset: resetAuthor, ...author } = useField('text')
+	const { reset: resetUrl, ...url } = useField('text')
+
+	const newBlogMutation = useMutation({
+		mutationFn: create,
+		onSuccess: (newBlog) => {
+			const blogs = queryClient.getQueryData(['blogs'])
+			queryClient.setQueryData(['blogs'], blogs.concat(newBlog))
+			setNotification({
+				type: 'info',
+				message: `Blog ${newBlog.title} created`
+			}, 4000)
+		},
+		onError: () => {
+			setNotification({
+				type: 'error',
+				message: 'Failed successfully'
+			}, 3000)
+		}
+	})
+
+	const addBlog = (event) => {
+		blogFormRef.current.toggleVisibility()
 		event.preventDefault()
-		createBlog(title, author, url)
-		setTitle('')
-		setAuthor('')
-		setUrl('')
+		newBlogMutation.mutate({
+			title: title.value,
+			author: author.value,
+			url: url.value
+		})
+		resetTitle()
+		resetAuthor()
+		resetUrl()
+	}
+
+	const handleReset = () => {
+		resetTitle()
+		resetAuthor()
+		resetUrl()
 	}
 
 	return (
 		<div className="form">
-			<form onSubmit={onSubmit}>
+			<form onSubmit={addBlog}>
 				<div>
 					<label>
 						Title:
-						<input
-							type="text"
-							name="title"
-							value={title}
-							id="blog-title"
-							placeholder="Write title here"
-							onChange={({ target }) => setTitle(target.value)}
-						/>
+						<input {...title} placeholder='Write title here' />
 					</label>
 				</div>
 				<div>
 					<label>
 						Author:
-						<input
-							type="text"
-							name="author"
-							value={author}
-							id="blog-author"
-							placeholder="author here"
-							onChange={({ target }) => setAuthor(target.value)}
-						/>
+						<input {...author} placeholder='Write author here' />
 					</label>
 				</div>
 				<div>
 					<label>
 						Url:
-						<input
-							type="text"
-							name="url"
-							value={url}
-							id="blog-url"
-							placeholder="Example: www.example.com"
-							onChange={({ target }) => setUrl(target.value)}
-						/>
+						<input {...url} placeholder='Example: www.example.com' />
 					</label>
 				</div>
-				<button type="submit">create</button>
+				<button>create</button>
+				<button onClick={handleReset}>reset</button>
 			</form>
 		</div>
 	)
