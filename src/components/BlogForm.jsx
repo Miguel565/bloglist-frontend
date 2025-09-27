@@ -12,8 +12,10 @@ const BlogForm = () => {
 	const { reset: resetAuthor, ...author } = useField('text')
 	const { reset: resetUrl, ...url } = useField('text')
 
-	const newBlogMutation = useMutation({
+	const createBlog = useMutation({
 		mutationFn: create,
+		retry: 3,
+		retryDealy: attemptIndex => Math.min(100 * 2 ** attemptIndex, 30000),
 		onSuccess: (newBlog) => {
 			const blogs = queryClient.getQueryData(['blogs'])
 			queryClient.setQueryData(['blogs'], blogs.concat(newBlog))
@@ -22,10 +24,16 @@ const BlogForm = () => {
 				message: `Blog ${newBlog.title} created`
 			}, 4000)
 		},
-		onError: () => {
+		onError: (error) => {
+			console.error('Failed to create blog');
+
+			const errorMessage = error.response?.data?.message
+                || error.message
+                || 'Failed successfully to create new blog'
+			
 			setNotification({
 				type: 'error',
-				message: 'Failed successfully'
+				message: errorMessage
 			}, 3000)
 		}
 	})
@@ -33,14 +41,12 @@ const BlogForm = () => {
 	const addBlog = (event) => {
 		blogFormRef.current.toggleVisibility()
 		event.preventDefault()
-		newBlogMutation.mutate({
+		createBlog.mutate({
 			title: title.value,
 			author: author.value,
 			url: url.value
 		})
-		resetTitle()
-		resetAuthor()
-		resetUrl()
+		handleReset()
 	}
 
 	const handleReset = () => {

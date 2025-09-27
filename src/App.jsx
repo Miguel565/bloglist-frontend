@@ -20,22 +20,6 @@ const App = () => {
     }
   }, [])
 
-  const updateBlogLikes = async (blog) => {
-    try {
-      const result = await blogServices.update(blog.id, { ...blog, likes: blog.likes + 1 })
-      setBlogs(prevBlogs => prevBlogs.map(b => b.id === blog.id ? result : b).sort((a, b) => b.likes - a.likes))
-    } catch (error) {
-      setNotification({
-        type: 'error',
-        text: 'Failure to do like, try again'
-      })
-      setTimeout(() => {
-        setNotification(null)
-      }, 3000)
-      console.error('Error updating blog likes: ', error)
-    }
-  }
-
   const onLogin = async (username, password) => {
     try {
       const user = await loginServices.login({ username, password })
@@ -51,31 +35,6 @@ const App = () => {
         setNotification(null)
       }, 3000)
       console.error('Login error: ', error)
-    }
-  }
-
-  const handleDelete = async (id) => {
-    if (window.confirm('Are you sure you want to delete this blog?')) {
-      try {
-        await blogServices.deleteBlog(id)
-        setBlogs(blogs => blogs.filter(blog => blog.id !== id))
-        setNotification({
-          type: 'info',
-          text: 'Blog deleted successfully'
-        })
-        setTimeout(() => {
-          setNotification(null)
-        }, 5000)
-      } catch (error) {
-        setNotification({
-          type: 'error',
-          text: 'Error deleting blog, try again'
-        })
-        setTimeout(() => {
-          setNotification(null)
-        }, 3000)
-        console.error('Delete error: ', error)
-      }
     }
   }
 
