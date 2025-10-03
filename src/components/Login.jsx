@@ -1,13 +1,18 @@
 import { useState } from 'react'
-import PropTypes from 'prop-types'
+import { useAuthUser } from '../hooks/useAuthUser'
 
-const LoginForm = ({ handleLogin }) => {
+const LoginForm = () => {
 	const [username, setUsername] = useState('')
 	const [password, setPassword] = useState('')
+	
+	const { userLogin } = useAuthUser()
 
 	const onSubmit = (event) => {
 		event.preventDefault()
-		handleLogin(username, password)
+		userLogin({
+			username: username,
+			password: password
+		})
 		setUsername('')
 		setPassword('')
 	}
@@ -42,10 +47,6 @@ const LoginForm = ({ handleLogin }) => {
 			</form>
 		</div>
 	)
-}
-
-LoginForm.propTypes = {
-	handleLogin: PropTypes.func.isRequired
 }
 
 LoginForm.displayName = 'LoginForm'

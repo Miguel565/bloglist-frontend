@@ -2,11 +2,13 @@ import { useRef } from 'react'
 import { useField } from '../hooks'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { create } from '../services/blogs'
-import { setNotification } from '../context/NotificationContext'
+import { useNotification } from '../hooks/useNotification'
 
 const BlogForm = () => {
 	const queryClient = useQueryClient()
 	const blogFormRef = useRef()
+
+	const { setNotification } = useNotification()
 
 	const { reset: resetTitle, ...title } = useField('text')
 	const { reset: resetAuthor, ...author } = useField('text')
@@ -15,14 +17,14 @@ const BlogForm = () => {
 	const createBlog = useMutation({
 		mutationFn: create,
 		retry: 3,
-		retryDealy: attemptIndex => Math.min(100 * 2 ** attemptIndex, 30000),
+		retryDelay: attemptIndex => Math.min(100 * 2 ** attemptIndex, 30000),
 		onSuccess: (newBlog) => {
 			const blogs = queryClient.getQueryData(['blogs'])
 			queryClient.setQueryData(['blogs'], blogs.concat(newBlog))
 			setNotification({
 				type: 'info',
 				message: `Blog ${newBlog.title} created`
-			}, 4000)
+			})
 		},
 		onError: (error) => {
 			console.error('Failed to create blog');

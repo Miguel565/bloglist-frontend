@@ -1,7 +1,11 @@
-import { useNotificationContext } from '../context/NotificationContext'
+import { useNotification } from '../hooks/useNotification'
 
 const Notification = () => {
-	const { notification } = useNotificationContext()
+	const { notification } = useNotification()
+
+	if (!notification) {
+		return null;
+	}
 	
 	return (
 		<div className={notification.type}>

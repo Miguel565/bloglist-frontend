@@ -7,9 +7,9 @@ export const NotificationProvider = ({ children }) => {
     const notification = useNotification()
 
     return (
-        <NotificationProvider.provider value={notification}>
+        <NotificationContext.Provider value={notification}>
             {children}
-        </NotificationProvider.provider>
+        </NotificationContext.Provider>
     )
 }
 

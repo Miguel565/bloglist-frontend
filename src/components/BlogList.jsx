@@ -1,15 +1,16 @@
 import { useState } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { setNotification } from '../context/Notificationcontext'
+import { useNotification } from '../hooks/useNotification'
 import { getAll, update, remove } from '../services/blogs'
 
 const BlogList = () => {
     const queryClient = useQueryClient()
+    const { setNotification } = useNotification()
 
     const updateLikes = useMutation({
         mutationFn: update,
         retry: 3,
-        retryDealy: attemptIndex => Math.min(100 * 2 ** attemptIndex, 30000),
+        retryDelay: attemptIndex => Math.min(100 * 2 ** attemptIndex, 30000),
         onSuccess: () => {
             queryClient.invalidateQueries('blogs')
         },
@@ -28,8 +29,14 @@ const BlogList = () => {
     const deleteBlog = useMutation({
         mutationFn: remove,
         retry: 3,
-        retryDealy: attemptIndex => Math.min(100 * 2 ** attemptIndex, 30000),
-        onSucess: () => { },
+        retryDelay: attemptIndex => Math.min(100 * 2 ** attemptIndex, 30000),
+        onSuccess: () => {
+            queryClient.invalidateQueries('blogs')
+            setNotification({
+                type: 'info',
+                message: 'Removed blog successfully'
+            })
+        },
         onError: (error) => {
             console.error('Delete failed:', error);
 
@@ -47,15 +54,15 @@ const BlogList = () => {
         queryFn: getAll,
         refetchOnWindowFocus: false,
         retry: 3,
-        retryDealy: attemptIndex => Math.min(100 * 2 ** attemptIndex, 30000)
+        retryDelay: attemptIndex => Math.min(100 * 2 ** attemptIndex, 30000)
     })
 
     if (isLoading) {
-        return <div><spam>Loading...</spam></div>
+        return <div><span>Loading...</span></div>
     }
 
     if (error) {
-        return <div><spam>Blogs service not available due to problems in server</spam></div>
+        return <div><span>Blogs service not available due to problems in server</span></div>
     }
 
     const [visible, setVisible] = useState(false)
