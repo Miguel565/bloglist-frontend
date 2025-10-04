@@ -6,6 +6,7 @@ import { getAll, update, remove } from '../services/blogs'
 const BlogList = () => {
     const queryClient = useQueryClient()
     const { setNotification } = useNotification()
+    const [visible, setVisible] = useState(false)
 
     const updateLikes = useMutation({
         mutationFn: update,
@@ -49,7 +50,7 @@ const BlogList = () => {
         }
     })
 
-    const { data: blogs, isLoading, error } = useQuery({
+    const result = useQuery({
         queryKey: ['blogs'],
         queryFn: getAll,
         refetchOnWindowFocus: false,
@@ -57,15 +58,15 @@ const BlogList = () => {
         retryDelay: attemptIndex => Math.min(100 * 2 ** attemptIndex, 30000)
     })
 
-    if (isLoading) {
+    if (result.isLoading) {
         return <div><span>Loading...</span></div>
     }
 
-    if (error) {
+    if (result.error) {
         return <div><span>Blogs service not available due to problems in server</span></div>
     }
 
-    const [visible, setVisible] = useState(false)
+    const blogs = result.data
 
     const handleVisible = () => {
         setVisible(!visible)
@@ -95,8 +96,8 @@ const BlogList = () => {
             <h2>Blogs List</h2>
             <ul>
                 {
-                    blogs?.map((blog) => {
-                        <li className='blog' key={blog.id}>
+                    blogs.map((blog) => 
+                        <li key={blog.id}>
                             <p>{blog.title} <button onClick={handleVisible}>{visible ? 'hide' : 'view'}</button></p>
                             <p>{blog.author}</p>
                             {visible &&
@@ -105,7 +106,7 @@ const BlogList = () => {
                                     <p data-testid="likes" >likes {blog.likes} <button data-testid="like-button" onClick={() => handleLikes(blog)}>like</button></p>
                                     <p>{blog.user.name}</p>
                                     {
-                                        blog.user.username === window.localStorage.getItem('loggedBlogUser') &&
+                                        blog.user.username === window.localStorage.getItem('userData') &&
                                         <form onSubmit={() => handleDelete(blog.id)}>
                                             <button>remove</button>
                                         </form>
@@ -113,7 +114,7 @@ const BlogList = () => {
                                 </div>
                             }
                         </li>
-                    })
+                    )
                 }
             </ul>
         </div>

@@ -8,8 +8,9 @@ const setToken = (newToken) => {
     token = `Bearer ${newToken}`
 }
 
-export const getAll = () => {
-    axios.get(baseUrl).then(response => response.data)
+export const getAll = async () => {
+    const response = await axios.get(baseUrl)
+    return response.data
 }
 
 export const create = async (newBlog) => {

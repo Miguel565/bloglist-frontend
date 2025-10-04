@@ -5,6 +5,7 @@ import BlogForm from './components/BlogForm'
 import LoginForm from './components/Login'
 import Togglable from './components/Togglable'
 import Notification from './components/Notification'
+import UserList from './components/UserList'
 import { useAuthUser } from './hooks/useAuthUser'
 
 const App = () => {
@@ -13,6 +14,9 @@ const App = () => {
   useEffect(() => {
     checkUserStatus()
   }, [])
+
+  const url = location.pathname
+  console.log('Url: ', url)
 
   return (
     <div className="App">
@@ -38,7 +42,7 @@ const App = () => {
           </Togglable>
         </div>
       }
-      <BlogList />
+      {url === '/users' ? <UserList /> : <BlogList />}
     </div>
   )
 }
