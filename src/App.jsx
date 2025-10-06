@@ -1,12 +1,13 @@
 import { useEffect } from 'react'
 //import './App.css'
 import BlogList from './components/BlogList'
-import BlogForm from './components/BlogForm'
 import LoginForm from './components/Login'
 import Togglable from './components/Togglable'
 import Notification from './components/Notification'
 import UserList from './components/UserList'
+import User from './components/User'
 import { useAuthUser } from './hooks/useAuthUser'
+import { Routes, Route } from 'react-router-dom'
 
 const App = () => {
   const { authUser, userLogout, checkUserStatus } = useAuthUser()
@@ -14,9 +15,6 @@ const App = () => {
   useEffect(() => {
     checkUserStatus()
   }, [])
-
-  const url = location.pathname
-  console.log('Url: ', url)
 
   return (
     <div className="App">
@@ -37,12 +35,13 @@ const App = () => {
             {authUser.name} logged in
             <button onClick={() => userLogout()}>Logout</button>
           </p>
-          <Togglable buttonLabel="create new blog" ref={blogFormRef}>
-            <BlogForm />
-          </Togglable>
         </div>
       }
-      {url === '/users' ? <UserList /> : <BlogList />}
+      <Routes>
+        <Route path='/' element={<BlogList />} />
+        <Route path='/users' element={<UserList />} />
+        <Route path='/users/:id' element={<User />} />
+      </Routes>
     </div>
   )
 }

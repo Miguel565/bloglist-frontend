@@ -7,6 +7,11 @@ export const getUsers = async () => {
     return response.data
 }
 
+export const getUserById = async (id) => {
+    const response = await axios.get(`${url}/${id}`)
+    return response.data
+}
+
 export const createUser = async (newUser) => {
     const response = await axios.post(url, newUser)
     return response.data

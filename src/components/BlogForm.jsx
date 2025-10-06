@@ -1,4 +1,3 @@
-import { useRef } from 'react'
 import { useField } from '../hooks'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { create } from '../services/blogs'
@@ -6,7 +5,6 @@ import { useNotification } from '../hooks/useNotification'
 
 const BlogForm = () => {
 	const queryClient = useQueryClient()
-	const blogFormRef = useRef()
 
 	const { setNotification } = useNotification()
 

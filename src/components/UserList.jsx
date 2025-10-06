@@ -1,4 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
+import { Link } from 'react-router-dom'
 import { getUsers } from '../services/users'
 
 const UserList = () => {
@@ -15,7 +16,7 @@ const UserList = () => {
     }
 
     if (error) {
-        return <div><span>Blogs service not available due to problems in server</span></div>
+        return <div><span>Blogs service not available </span></div>
     }
 
     console.log('User: ', users)
@@ -25,13 +26,13 @@ const UserList = () => {
             <h2><strom>Users</strom></h2>
             <table>
                 <tr>
-                    <th> </th>
+                    <th>Users</th>
                     <th>blogs created</th>
                 </tr>
                 {
                     users.map((user) =>
                         <tr key={user.id}>
-                            <td>{user.name}</td>
+                            <td><Link to={`/users/${user.id}`}>{user.name}</Link></td>
                             <td>{user.blogs.length}</td>
                         </tr>
                     )

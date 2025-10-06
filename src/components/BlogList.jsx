@@ -1,12 +1,18 @@
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { useNotification } from '../hooks/useNotification'
+import { useAuthUser } from '../hooks/useAuthUser'
+import BlogForm from './BlogForm'
+import Togglable from './Togglable'
 import { getAll, update, remove } from '../services/blogs'
 
 const BlogList = () => {
     const queryClient = useQueryClient()
     const { setNotification } = useNotification()
     const [visible, setVisible] = useState(false)
+    const blogFormRef = useRef()
+
+    const { authUser } = useAuthUser()
 
     const updateLikes = useMutation({
         mutationFn: update,
@@ -94,9 +100,17 @@ const BlogList = () => {
     return (
         <div>
             <h2>Blogs List</h2>
+            {
+                <div>
+                    authUser &&
+                    <Togglable buttonLabel="create new blog" ref={blogFormRef}>
+                        <BlogForm />
+                    </Togglable>
+                </div>
+            }
             <ul>
                 {
-                    blogs.map((blog) => 
+                    blogs.map((blog) =>
                         <li key={blog.id}>
                             <p>{blog.title} <button onClick={handleVisible}>{visible ? 'hide' : 'view'}</button></p>
                             <p>{blog.author}</p>
