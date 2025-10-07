@@ -6,6 +6,7 @@ import Togglable from './components/Togglable'
 import Notification from './components/Notification'
 import UserList from './components/UserList'
 import User from './components/User'
+import Blog from './components/Blog'
 import { useAuthUser } from './hooks/useAuthUser'
 import { Routes, Route } from 'react-router-dom'
 
@@ -41,6 +42,7 @@ const App = () => {
         <Route path='/' element={<BlogList />} />
         <Route path='/users' element={<UserList />} />
         <Route path='/users/:id' element={<User />} />
+        <Route path='/blogs/:id' element={<Blog />} />
       </Routes>
     </div>
   )

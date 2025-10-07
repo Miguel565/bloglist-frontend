@@ -13,6 +13,11 @@ export const getAll = async () => {
     return response.data
 }
 
+export const getById = async (id) => {
+    const response = await axios.get(`${baseUrl}/${id}`)
+    return response.data
+}
+
 export const create = async (newBlog) => {
     const config = {
         headers: { Authorization: token },

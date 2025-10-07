@@ -3,14 +3,15 @@ import { getUserById } from '../services/users'
 import { useQuery } from '@tanstack/react-query'
 
 const User = () => {
-    const { userId } = useParams()
+    const { id } = useParams()
 
     const { data: user, isLoading, error } = useQuery({
-        queryKey: ['user', userId],
-        queryFn: () => getUserById(userId),
-        enabled: !!userId,
-        staleTime: 1000 * 60 * 2,
+        queryKey: ['user', id],
+        queryFn: () => getUserById(id),
+        enabled: !!id,
+        staleTime: 1000 * 60 * 3,
         cacheTime: 1000 * 60 * 30,
+        refetchOnWindowFocus: false,
         retry: (failureCount, error) => {
             if (error.response?.status === 404) {
                 return false
@@ -34,11 +35,13 @@ const User = () => {
         <div>
             <h2><strong>{user.name}</strong></h2>
             <h3>blogs added</h3>
-            <ul>
-                {user.blogs?.map(blog =>
-                    <li key={blog.id}>{blog.title}</li>
-                )}
-            </ul>
+            <div>
+                <ul>
+                    {user.blogs?.map(blog =>
+                        <li key={blog.id}>{blog.title}</li>
+                    )}
+                </ul>
+            </div>
         </div>
     )
 }

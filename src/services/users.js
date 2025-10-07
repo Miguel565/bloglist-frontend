@@ -9,6 +9,7 @@ export const getUsers = async () => {
 
 export const getUserById = async (id) => {
     const response = await axios.get(`${url}/${id}`)
+    console.log('Services: ', response.data)
     return response.data
 }
 

@@ -19,24 +19,26 @@ const UserList = () => {
         return <div><span>Blogs service not available </span></div>
     }
 
-    console.log('User: ', users)
-
     return (
         <div>
-            <h2><strom>Users</strom></h2>
+            <h2><strong>Users</strong></h2>
             <table>
-                <tr>
-                    <th>Users</th>
-                    <th>blogs created</th>
-                </tr>
-                {
-                    users.map((user) =>
-                        <tr key={user.id}>
-                            <td><Link to={`/users/${user.id}`}>{user.name}</Link></td>
-                            <td>{user.blogs.length}</td>
-                        </tr>
-                    )
-                }
+                <thead>
+                    <tr>
+                        <th>Users</th>
+                        <th>blogs created</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {
+                        users.map((user) =>
+                            <tr key={user.id}>
+                                <td><Link to={`/users/${user.id}`}>{user.name}</Link></td>
+                                <td>{user.blogs.length}</td>
+                            </tr>
+                        )
+                    }
+                </tbody>
             </table>
         </div>
     )
