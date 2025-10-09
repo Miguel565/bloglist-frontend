@@ -1,12 +1,15 @@
+import { useState } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { useParams } from 'react-router-dom'
-import { getById, update, remove } from '../services/blogs'
+import { getById, update, remove, createComment } from '../services/blogs'
 import { useNotification } from '../hooks/useNotification'
 
 const Blog = () => {
     const queryClient = useQueryClient()
     const { setNotification } = useNotification()
     const { id } = useParams()
+
+    const [comment, setComment] = useState('')
 
     const updateLikes = useMutation({
         mutationFn: update,
@@ -40,6 +43,25 @@ const Blog = () => {
         },
         onError: (error) => {
             console.error('Delete failed:', error);
+
+            const errorMessage = getErrorMessage(error)
+
+            setNotification({
+                type: 'error',
+                message: errorMessage
+            }, 4000)
+        }
+    })
+
+    const addComment = useMutation({
+        mutationFn: createComment,
+        retry: 3,
+        retryDelay: attemptIndex => Math.min(100 * 2 ** attemptIndex, 30000),
+        onSuccess: () => {
+            queryClient.invalidateQueries(['blog', id])
+        },
+        onError: (error) => {
+            console.error('Add comment failed:', error);
 
             const errorMessage = getErrorMessage(error)
 
@@ -93,6 +115,15 @@ const Blog = () => {
         return 'An unexpected error!'
     }
 
+    const handleComment = (event) => {
+        event.preventDefault()
+        addComment.mutate({
+            blogId: blog.id,
+            newComment: comment
+        })
+        setComment('')
+    }
+
     return (
         <div>
             <h2><strong>{blog.title}</strong></h2>
@@ -113,6 +144,21 @@ const Blog = () => {
             </div>
             <div>
                 <h3>Comments</h3>
+                <div>
+                    <form onSubmit={handleComment}>
+                        <div>
+                            <label>
+                                Comment
+                                <input type='text'
+                                name='comment'
+                                value={comment}
+                                onChange={({ target }) => setComment(target.value)}
+                                />
+                            </label>
+                        </div>
+                        <button>add comment</button>
+                    </form>
+                </div>
                 <ul>
                     {blog.comments
                         ? blog.comments.map(comment =>
