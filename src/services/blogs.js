@@ -26,6 +26,11 @@ export const create = async (newBlog) => {
     return response.data
 }
 
+export const createComment = async (content) => {
+    const response = await axios.post(`${baseUrl}/${content.blogId}/comments`, content.newComment)
+    return response.data
+}
+
 export const update = async (updatedBlog) => {
     const request = await axios.put(`${baseUrl}/${updatedBlog.id}`, updatedBlog)
     return request.data

@@ -1,7 +1,9 @@
 import { useState } from 'react'
 import { useAuthUser } from '../hooks/useAuthUser'
+import { useNavigate } from 'react-router-dom'
 
 const LoginForm = () => {
+	const navigate = useNavigate()
 	const [username, setUsername] = useState('')
 	const [password, setPassword] = useState('')
 	
@@ -15,6 +17,7 @@ const LoginForm = () => {
 		})
 		setUsername('')
 		setPassword('')
+		navigate('/')
 	}
 
 	return (

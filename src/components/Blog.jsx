@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { useParams } from 'react-router-dom'
-import { getById } from '../services/blogs'
+import { getById, update, remove } from '../services/blogs'
 import { useNotification } from '../hooks/useNotification'
 
 const Blog = () => {
@@ -97,7 +97,9 @@ const Blog = () => {
         <div>
             <h2><strong>{blog.title}</strong></h2>
             <div>
-                <p>{blog.url}</p>
+                <p>
+                    <a href={blog.url}>View blog</a>
+                </p>
                 <p data-testid="likes" >
                     likes {blog.likes} <button data-testid="like-button" onClick={() => handleLikes(blog)}>like</button>
                 </p>
@@ -108,6 +110,16 @@ const Blog = () => {
                         <button>remove</button>
                     </form>
                 }
+            </div>
+            <div>
+                <h3>Comments</h3>
+                <ul>
+                    {blog.comments
+                        ? blog.comments.map(comment =>
+                            <li key={comment.id}>{comment.content}</li>
+                        ) : <p>No comments yet</p>
+                    }
+                </ul>
             </div>
         </div>
     )
