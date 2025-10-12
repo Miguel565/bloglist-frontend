@@ -21,14 +21,14 @@ export const useAuthUser = () => {
     const userLogin = useCallback(async (credentials) => {
         try {
             const user = await login(credentials)
-            if (user.success) {
+            if (user) {
                 window.localStorage.setItem('userData', JSON.stringify(user))
                 blogService.setToken(user.token)
                 setNotification({
                     type: 'info',
                     message: 'Success login!'
                 }, 2000)
-                dispatch({ type: 'LOGIN', payload: user.data })
+                dispatch({ type: 'LOGIN', payload: user })
             }
         } catch (error) {
             console.error('Login error: ', error)

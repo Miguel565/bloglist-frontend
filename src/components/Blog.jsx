@@ -3,6 +3,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { useParams } from 'react-router-dom'
 import { getById, update, remove, createComment } from '../services/blogs'
 import { useNotification } from '../hooks/useNotification'
+import { Container, Card, Button, Form } from 'react-bootstrap'
 
 const Blog = () => {
     const queryClient = useQueryClient()
@@ -125,49 +126,43 @@ const Blog = () => {
     }
 
     return (
-        <div>
-            <h2><strong>{blog.title}</strong></h2>
-            <div>
-                <p>
-                    <a href={blog.url}>View blog</a>
-                </p>
-                <p data-testid="likes" >
-                    likes {blog.likes} <button data-testid="like-button" onClick={() => handleLikes(blog)}>like</button>
-                </p>
-                <p>created by: {blog.user.name}</p>
-                {
-                    blog.user.username === window.localStorage.getItem('userData') &&
-                    <form onSubmit={() => handleDelete(blog.id)}>
-                        <button>remove</button>
-                    </form>
-                }
-            </div>
-            <div>
-                <h3>Comments</h3>
-                <div>
-                    <form onSubmit={handleComment}>
-                        <div>
-                            <label>
-                                Comment
-                                <input type='text'
+        <Container className='col-md-5 mx-auto py-4'>
+            <Card>
+                <Card.Header as='h2'><strong>{blog.title}</strong></Card.Header>
+                <Card.Body>
+                    <Card.Link href={blog.url}>View blog</Card.Link>
+                    <Card.Text>
+                        likes {blog.likes} <Button variant='primary' onClick={() => handleLikes(blog)}>like</Button>
+                    </Card.Text>
+                    <Card.Text>created by: {blog.user.name}</Card.Text>
+                    {
+                        blog.user.username === window.localStorage.getItem('userData') &&
+                        <Form onSubmit={() => handleDelete(blog.id)}>
+                            <Form.Group className='mb-3'>
+                                <Button variant='danger' type='submit'>remove</Button>
+                            </Form.Group>
+                        </Form>
+                    }
+                    <Card.Title as='h3'>Comments</Card.Title>
+                    <Form>
+                        <Form.Group className='mb-3'>
+                            <Form.Label>Comment</Form.Label>
+                            <Form.Control type='text'
                                 name='comment'
                                 value={comment}
                                 onChange={({ target }) => setComment(target.value)}
-                                />
-                            </label>
-                        </div>
-                        <button>add comment</button>
-                    </form>
-                </div>
-                <ul>
+                            />
+                        </Form.Group>
+                        <Button variant='primary' type='submit'>send</Button>
+                    </Form>
                     {blog.comments
                         ? blog.comments.map(comment =>
                             <li key={comment.id}>{comment.content}</li>
                         ) : <p>No comments yet</p>
                     }
-                </ul>
-            </div>
-        </div>
+                </Card.Body>
+            </Card>
+        </Container>
     )
 }
 

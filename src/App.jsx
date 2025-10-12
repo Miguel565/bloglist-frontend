@@ -9,6 +9,7 @@ import NavBar from './components/NavBar'
 import LoginForm from './components/Login'
 import { useAuthUser } from './hooks/useAuthUser'
 import { Routes, Route, Navigate } from 'react-router-dom'
+import 'bootstrap/dist/css/bootstrap.min.css'
 
 const App = () => {
   const { authUser, checkUserStatus } = useAuthUser()
@@ -18,11 +19,8 @@ const App = () => {
   }, [])
 
   return (
-    <div className="App">
+    <div>
       <NavBar />
-      <header className="App-header">
-        <h1>Blogs</h1>
-      </header>
       <Notification />
       <Routes>
         <Route path='/' element={<BlogList />} />

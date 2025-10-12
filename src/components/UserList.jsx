@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 import { Link } from 'react-router-dom'
 import { getUsers } from '../services/users'
+import { Container, Table, Card } from 'react-bootstrap'
 
 const UserList = () => {
     const { data: users, isLoading, error } = useQuery({
@@ -20,27 +21,31 @@ const UserList = () => {
     }
 
     return (
-        <div>
-            <h2><strong>Users</strong></h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Users</th>
-                        <th>blogs created</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {
-                        users.map((user) =>
-                            <tr key={user.id}>
-                                <td><Link to={`/users/${user.id}`}>{user.name}</Link></td>
-                                <td>{user.blogs.length}</td>
+        <Container className='py-4'>
+            <Card>
+                <Card.Header as='h2'><strong>Users</strong></Card.Header>
+                <Card.Body>
+                    <Table striped bordered hover>
+                        <thead>
+                            <tr>
+                                <th>Users</th>
+                                <th>blogs created</th>
                             </tr>
-                        )
-                    }
-                </tbody>
-            </table>
-        </div>
+                        </thead>
+                        <tbody>
+                            {
+                                users.map((user) =>
+                                    <tr key={user.id}>
+                                        <td><Link to={`/users/${user.id}`}>{user.name}</Link></td>
+                                        <td>{user.blogs.length}</td>
+                                    </tr>
+                                )
+                            }
+                        </tbody>
+                    </Table>
+                </Card.Body>
+            </Card>
+        </Container>
     )
 }
 
