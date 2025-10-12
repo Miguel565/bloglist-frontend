@@ -2,6 +2,7 @@ import { useField } from '../hooks'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { create } from '../services/blogs'
 import { useNotification } from '../hooks/useNotification'
+import { Container, Card, Form, Button } from 'react-bootstrap'
 
 const BlogForm = () => {
 	const queryClient = useQueryClient()
@@ -28,9 +29,9 @@ const BlogForm = () => {
 			console.error('Failed to create blog');
 
 			const errorMessage = error.response?.data?.message
-                || error.message
-                || 'Failed successfully to create new blog'
-			
+				|| error.message
+				|| 'Failed successfully to create new blog'
+
 			setNotification({
 				type: 'error',
 				message: errorMessage
@@ -56,30 +57,37 @@ const BlogForm = () => {
 	}
 
 	return (
-		<div className="form">
-			<form onSubmit={addBlog}>
-				<div>
-					<label>
-						Title:
-						<input {...title} placeholder='Write title here' />
-					</label>
-				</div>
-				<div>
-					<label>
-						Author:
-						<input {...author} placeholder='Write author here' />
-					</label>
-				</div>
-				<div>
-					<label>
-						Url:
-						<input {...url} placeholder='Example: www.example.com' />
-					</label>
-				</div>
-				<button>create</button>
-				<button onClick={handleReset}>reset</button>
-			</form>
-		</div>
+		<Container>
+			<Card>
+				<Card.Header as='h3'>New Blog</Card.Header>
+				<Card.Body>
+					<Form onSubmit={addBlog}>
+						<Form.Group className='mb-3'>
+							<Form.Label>
+								Title:
+								<Form.Control {...title} placeholder='Write title here' />
+							</Form.Label>
+						</Form.Group>
+						<Form.Group className='mb-3'>
+							<Form.Label>
+								Author:
+								<Form.Control {...author} placeholder='Write author here' />
+							</Form.Label>
+						</Form.Group>
+						<Form.Group className='mb-3'>
+							<Form.Label>
+								Url:
+								<Form.Control {...url} placeholder='Example: www.example.com' />
+							</Form.Label>
+						</Form.Group>
+						<Form.Group className='mb-3'>
+							<Button variant='primary' type='submit'>create</Button>
+							<Button variant='secundary' className='mb-2' onClick={handleReset}>reset</Button>
+						</Form.Group>
+					</Form>
+				</Card.Body>
+			</Card>
+		</Container>
 	)
 }
 
